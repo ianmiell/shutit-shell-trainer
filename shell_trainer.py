@@ -287,6 +287,17 @@ root     29548     2  0 20:05 ?        00:00:00 [kworker/u6:0]
 imiell   29578 28360  0 20:08 pts/18   00:00:00 ps -ef''')
 		shutit.send('cat ps.txt',note='In this tutorial you are going to learn the basics of some useful shell utilities by looking at the output of a typical ps command stored in this file.')
 		shutit.send("""awk '{print $2}' ps.txt""",note='To start with, we want to get a list of all the process ids. These are listed in the second column.')
+		shutit.send("""grep -v ^[A-Z] ps.txt | awk '{print $2}'""",note='But to pass list to another command we want to get rid of the header. We can do this in several ways. Here we do it with a grep -v to remove any lines that begin with a capital letter before passing it to the awk command.')
+		# xargs
+		shutit.send("""grep -v ^[A-Z] ps.txt | awk '{print $2}' | xargs echo""",note='Often we will want to run commands against the output of such a command.\n\nOften you will xargs for such a task. Here we just take the arguments and echo them to the terminal. Note that all the arguments have been passed to echo by xargs on a single line')
+		shutit.send("""grep -v ^[A-Z] ps.txt | awk '{print $2}' | xargs -n 1 echo""",note='If we want each argument to be output on a single line, we can pass the -n argument to indicate that we want the echo command to be run once per line of output.')
+		shutit.send("""grep -v ^[A-Z] ps.txt | awk '{print $2}' | xargs -IXXX top -b -p XXX -n 1""",note='You can achieve a similar effect by using the -I flag.\n\nThis specifies a string (here we use XXX to subsititute into the middle of the command (rather than at the end).\n\nThis places each pid into the -p(rocess) argument to top. The -b argument specifies batch mode, and -n tells top to run only one iteration.\n\n')
+		# tr
+		shutit.send("""cat ps.txt | tr '7' '8'""",note='tr is an often-handy tool which.\n\nWe consider the number 7 to be unlucky, so are going to replace any instances of 7 in the output with 8')
+		# sed
+		shutit.send(r"""sed 's/Dec\([0-9][0-9]\)/December\1/g' ps.txt""",note='sed is similar to tr, but is a far more powerful tool for working on data input and transforming it.\n\nHere we are going to use sed to replace references to Dec in the output to December')
+
+		# basic perl -p -i -e
 		return True
 
 	def get_config(self, shutit):
